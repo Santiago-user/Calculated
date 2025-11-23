@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Unidades para Estudiantes</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1e293b;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            width: 350px;
+            margin: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        select, input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #64748b;
+        }
+
+        button {
+            width: 90%;
+            padding: 12px;
+            font-size: 16px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        #resultado {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #0f172a;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔢 Conversor para Estudiantes</h1>
+
+    <div class="card">
+        <input type="number" id="valor" placeholder="Ingresa un valor">
+
+        <select id="tipo">
+            <option value="longitud">Longitud (m - km - cm)</option>
+            <option value="masa">Masa (kg - g - mg)</option>
+            <option value="tiempo">Tiempo (s - min - hr)</option>
+        </select>
+
+        <select id="desde"></select>
+        <select id="hasta"></select>
+
+        <button onclick="convertir()">Convertir</button>
+
+        <p id="resultado"></p>
+    </div>
+
+    <script>
+        const opciones = {
+            longitud: ["m", "km", "cm"],
+            masa: ["kg", "g", "mg"],
+            tiempo: ["s", "min", "hr"]
+        };
+
+        const factores = {
+            m: 1, km: 1000, cm: 0.01,
+            kg: 1, g: 0.001, mg: 0.000001,
+            s: 1, min: 60, hr: 3600
+        };
+
+        function cargarOpciones() {
+            const tipo = document.getElementById("tipo").value;
+            const desde = document.getElementById("desde");
+            const hasta = document.getElementById("hasta");
+
+            desde.innerHTML = "";
+            hasta.innerHTML = "";
+
+            opciones[tipo].forEach(u => {
+                desde.innerHTML += `<option value="${u}">${u}</option>`;
+                hasta.innerHTML += `<option value="${u}">${u}</option>`;
+            });
+        }
+
+        function convertir() {
+            const valor = parseFloat(document.getElementById("valor").value);
+            const u1 = document.getElementById("desde").value;
+            const u2 = document.getElementById("hasta").value;
+
+            if (isNaN(valor)) {
+                document.getElementById("resultado").innerText = "Ingresa un valor válido";
+                return;
+            }
+
+            const resultado = (valor * factores[u1]) / factores[u2];
+
+            document.getElementById("resultado").innerText =
+                `${valor} ${u1} = ${resultado} ${u2}`;
+        }
+
+        cargarOpciones();
+        document.getElementById("tipo").addEventListener("change", cargarOpciones);
+    </script>
+
+</body>
+</html>
