@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8308493732959992"
+     crossorigin="anonymous"></script>
+
+<meta charset="UTF-8">
+<title>Conversor Estudiantil</title>
+
+<style>
+    body {
+        font-family: Arial;
+        background: #f2f2f2;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        width: 360px;
+        background: white;
+        padding: 22px;
+        border-radius: 18px;
+        box-shadow: 0 0 18px rgba(0,0,0,0.25);
+        position: relative;
+        animation: aparecer 0.7s ease;
+    }
+
+    @keyframes aparecer {
+        from { opacity: 0; transform: scale(0.8);}
+        to   { opacity: 1; transform: scale(1);}
+    }
+
+    /* Reglas animadas */
+    @keyframes flotar {
+        0%   { transform: translateY(0px) rotate(-15deg); }
+        50%  { transform: translateY(-10px) rotate(-12deg); }
+        100% { transform: translateY(0px) rotate(-15deg); }
+    }
+
+    @keyframes flotar2 {
+        0%   { transform: translateY(0px) rotate(10deg); }
+        50%  { transform: translateY(10px) rotate(13deg); }
+        100% { transform: translateY(0px) rotate(10deg); }
+    }
+
+    @keyframes aparecer2 {
+        from { opacity:0; transform:scale(0.8); }
+        to   { opacity:1; transform:scale(1); }
+    }
+
+    .regla {
+        position: absolute;
+        top: -30px;
+        left: -60px;
+        width: 120px;
+        opacity: 0.8;
+        animation: flotar 3.5s ease-in-out infinite, aparecer2 1s ease;
+    }
+
+    .regla2 {
+        position: absolute;
+        bottom: -40px;
+        right: -60px;
+        width: 140px;
+        opacity: 0.8;
+        animation: flotar2 4s ease-in-out infinite, aparecer2 1.2s ease;
+    }
+
+    /* ----------------------------- */
+    /* BOTÓN PRINCIPAL */
+    /* ----------------------------- */
+    .menu-btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        background: #007bff;
+        color: white;
+        border-radius: 10px;
+        font-size: 17px;
+        cursor: pointer;
+        margin-bottom: 18px;
+        transition: 0.2s;
+    }
+
+    .menu-btn:hover {
+        background: #005cd1;
+    }
+
+    /* Menú circular */
+    .menu-circular {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin: auto;
+        display: none; /* se muestra al abrir */
+    }
+
+    .menu-item {
+        width: 70px;
+        height: 70px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: 0.2s;
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    .menu-item img {
+        width: 30px;
+    }
+
+    .menu-item span {
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
+    .menu-item:hover {
+        transform: scale(1.15);
+    }
+
+    /* mostrar elementos */
+    .mostrar {
+        opacity: 1 !important;
+        transform: scale(1) !important;
+        transition: 0.4s ease;
+    }
+
+    /* Formulario */
+    h2 {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    select, input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    #resultado {
+        margin-top: 14px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Reglas flotantes -->
+    <img src="https://cdn-icons-png.flaticon.com/512/2716/2716090.png" class="regla">
+    <img src="https://cdn-icons-png.flaticon.com/512/4893/4893011.png" class="regla2">
+
+    <!-- Botón del menú -->
+    <button class="menu-btn" onclick="toggleMenu()">🎛️ Seleccionar tipo de conversión</button>
+
+    <!-- Menú circular animado -->
+    <div id="menu" class="menu-circular">
+        <div class="menu-item" id="longitud" style="top:0; left:65px;" onclick="setCategoria('longitud')">
+            <img src="https://cdn-icons-png.flaticon.com/512/216/216268.png">
+            <span>Longitud</span>
+        </div>
+
+        <div class="menu-item" id="peso" style="top:65px; left:0;" onclick="setCategoria('peso')">
+            <img src="https://cdn-icons-png.flaticon.com/512/1041/1041102.png">
+            <span>Peso</span>
+        </div>
+
+        <div class="menu-item" id="temp" style="top:65px; right:0;" onclick="setCategoria('temp')">
+            <img src="https://cdn-icons-png.flaticon.com/512/1684/1684375.png">
+            <span>Temperatura</span>
+        </div>
+
+        <div class="menu-item" id="tiempo" style="bottom:0; left:65px;" onclick="setCategoria('tiempo')">
+            <img src="https://cdn-icons-png.flaticon.com/512/1827/1827504.png">
+            <span>Tiempo</span>
+        </div>
+    </div>
+
+    <h2 id="titulo">Conversor Estudiantil</h2>
+
+    <input type="number" id="valor" placeholder="Ingresa el valor">
+
+    <select id="tipo"></select>
+
+    <button onclick="convertir()">Convertir</button>
+
+    <div id="resultado"></div>
+</div>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+
+    const items = document.querySelectorAll(".menu-item");
+    items.forEach(i => i.classList.toggle("mostrar"));
+}
+
+function setCategoria(cat) {
+    const tipo = document.getElementById("tipo");
+    tipo.innerHTML = ""; 
+
+    document.getElementById("titulo").innerText =
+        "Conversión de " + cat.charAt(0).toUpperCase() + cat.slice(1);
+
+    if (cat === "longitud") {
+        tipo.innerHTML += `<option value="m_cm">Metros → Centímetros</option>`;
+        tipo.innerHTML += `<option value="cm_m">Centímetros → Metros</option>`;
+        tipo.innerHTML += `<option value="km_m">Kilómetros → Metros</option>`;
+        tipo.innerHTML += `<option value="m_km">Metros → Kilómetros</option>`;
+    }
+
+    if (cat === "peso") {
+        tipo.innerHTML += `<option value="kg_g">Kilogramos → Gramos</option>`;
+        tipo.innerHTML += `<option value="g_kg">Gramos → Kilogramos</option>`;
+    }
+
+    if (cat === "temp") {
+        tipo.innerHTML += `<option value="c_f">Celsius → Fahrenheit</option>`;
+        tipo.innerHTML += `<option value="f_c">Fahrenheit → Celsius</option>`;
+    }
+
+    if (cat === "tiempo") {
+        tipo.innerHTML += `<option value="h_min">Horas → Minutos</option>`;
+        tipo.innerHTML += `<option value="min_h">Minutos → Horas</option>`;
+        tipo.innerHTML += `<option value="seg_min">Segundos → Minutos</option>`;
+        tipo.innerHTML += `<option value="min_seg">Minutos → Segundos</option>`;
+    }
+
+    toggleMenu();
+}
+
+function convertir() {
+    let v = parseFloat(document.getElementById("valor").value);
+    let tipo = document.getElementById("tipo").value;
+    let r = 0;
+
+    switch(tipo) {
+        case "m_cm": r = v * 100; break;
+        case "cm_m": r = v / 100; break;
+        case "km_m": r = v * 1000; break;
+        case "m_km": r = v / 1000; break;
+
+        case "kg_g": r = v * 1000; break;
+        case "g_kg": r = v / 1000; break;
+
+        case "c_f": r = (v * 9/5) + 32; break;
+        case "f_c": r = (v - 32) * 5/9; break;
+
+        case "h_min": r = v * 60; break;
+        case "min_h": r = v / 60; break;
+        case "seg_min": r = v / 60; break;
+        case "min_seg": r = v * 60; break;
+    }
+
+    document.getElementById("resultado").innerHTML = "Resultado: " + r;
+}
+</script>
+
+</body>
+</html>
