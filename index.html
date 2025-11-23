@@ -2,220 +2,271 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Conversor Circular Santiago</title>
+<title>Conversor Estudiantil</title>
 
 <style>
     body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #1b1b1b, #333);
-        text-align: center;
-        color: white;
-        padding-top: 40px;
-    }
-
-    h1 {
-        font-size: 32px;
-        margin-bottom: 10px;
-        text-shadow: 0 0 10px #00eaff;
-    }
-
-    /* BOTÓN CENTRAL */
-    #menu-btn {
-        width: 90px;
-        height: 90px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #00eaff, #007bff);
-        border: 3px solid white;
-        color: black;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 17px;
-        transition: 0.3s;
-        box-shadow: 0 0 20px #00eaff;
-    }
-
-    #menu-btn:hover {
-        transform: scale(1.1);
-        box-shadow: 0 0 25px #00ffff;
-    }
-
-    /* CONTENEDOR DEL CÍRCULO */
-    #menu-circle {
-        position: relative;
-        width: 260px;
-        height: 260px;
-        margin: 20px auto;
-        transform: rotate(0deg);
-        transition: 1.2s ease;
-    }
-
-    /* ICONOS DEL MENÚ */
-    .menu-item {
-        width: 65px;
-        height: 65px;
-        border-radius: 50%;
-        background: #ffce00;
-        border: 3px solid #333;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        font-family: Arial;
+        background: #f2f2f2;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
         display: flex;
-        align-items: center;
         justify-content: center;
-        font-size: 30px;
-        cursor: pointer;
-        opacity: 0;
-        transition: 0.6s;
-        box-shadow: 0 0 10px black;
+        align-items: center;
     }
 
-    .menu-item.active {
-        opacity: 1;
-    }
-
-    /* PANEL DE CONVERSIÓN */
-    #panel {
+    .container {
+        width: 360px;
         background: white;
-        width: 90%;
-        max-width: 450px;
-        margin: 20px auto;
-        padding: 20px;
-        color: black;
-        border-radius: 20px;
-        box-shadow: 0 0 20px black;
-        display: none;
+        padding: 22px;
+        border-radius: 18px;
+        box-shadow: 0 0 18px rgba(0,0,0,0.25);
+        position: relative;
         animation: aparecer 0.7s ease;
     }
 
     @keyframes aparecer {
-        from { opacity: 0; transform: translateY(20px); }
-        to   { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; transform: scale(0.8);}
+        to   { opacity: 1; transform: scale(1);}
+    }
+
+    /* Reglas animadas */
+    @keyframes flotar {
+        0%   { transform: translateY(0px) rotate(-15deg); }
+        50%  { transform: translateY(-10px) rotate(-12deg); }
+        100% { transform: translateY(0px) rotate(-15deg); }
+    }
+
+    @keyframes flotar2 {
+        0%   { transform: translateY(0px) rotate(10deg); }
+        50%  { transform: translateY(10px) rotate(13deg); }
+        100% { transform: translateY(0px) rotate(10deg); }
+    }
+
+    @keyframes aparecer2 {
+        from { opacity:0; transform:scale(0.8); }
+        to   { opacity:1; transform:scale(1); }
+    }
+
+    .regla {
+        position: absolute;
+        top: -30px;
+        left: -60px;
+        width: 120px;
+        opacity: 0.8;
+        animation: flotar 3.5s ease-in-out infinite, aparecer2 1s ease;
+    }
+
+    .regla2 {
+        position: absolute;
+        bottom: -40px;
+        right: -60px;
+        width: 140px;
+        opacity: 0.8;
+        animation: flotar2 4s ease-in-out infinite, aparecer2 1.2s ease;
+    }
+
+    /* ----------------------------- */
+    /* BOTÓN PRINCIPAL */
+    /* ----------------------------- */
+    .menu-btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        background: #007bff;
+        color: white;
+        border-radius: 10px;
+        font-size: 17px;
+        cursor: pointer;
+        margin-bottom: 18px;
+        transition: 0.2s;
+    }
+
+    .menu-btn:hover {
+        background: #005cd1;
+    }
+
+    /* Menú circular */
+    .menu-circular {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin: auto;
+        display: none; /* se muestra al abrir */
+    }
+
+    .menu-item {
+        width: 70px;
+        height: 70px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: 0.2s;
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    .menu-item img {
+        width: 30px;
+    }
+
+    .menu-item span {
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
+    .menu-item:hover {
+        transform: scale(1.15);
+    }
+
+    /* mostrar elementos */
+    .mostrar {
+        opacity: 1 !important;
+        transform: scale(1) !important;
+        transition: 0.4s ease;
+    }
+
+    /* Formulario */
+    h2 {
+        text-align: center;
+        margin-bottom: 15px;
     }
 
     select, input {
-        width: 80%;
+        width: 100%;
         padding: 10px;
-        margin-top: 13px;
-        border-radius: 10px;
-        border: 2px solid #007bff;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    #resultado {
+        margin-top: 14px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
     }
 </style>
-
 </head>
 <body>
 
-<h1>✨ Conversor con Menú Circular </h1>
+<div class="container">
 
-<button id="menu-btn">Menú</button>
+    <!-- Reglas flotantes -->
+    <img src="https://cdn-icons-png.flaticon.com/512/2716/2716090.png" class="regla">
+    <img src="https://cdn-icons-png.flaticon.com/512/4893/4893011.png" class="regla2">
 
-<div id="menu-circle">
-    <div class="menu-item" id="i1" data-cat="longitud">📏</div>
-    <div class="menu-item" id="i2" data-cat="masa">⚖️</div>
-    <div class="menu-item" id="i3" data-cat="temp">🌡️</div>
-    <div class="menu-item" id="i4" data-cat="tiempo">⏱️</div>
-    <div class="menu-item" id="i5" data-cat="volumen">📦</div>
-    <div class="menu-item" id="i6" data-cat="datos">💾</div>
+    <!-- Botón del menú -->
+    <button class="menu-btn" onclick="toggleMenu()">🎛️ Seleccionar tipo de conversión</button>
+
+    <!-- Menú circular animado -->
+    <div id="menu" class="menu-circular">
+        <div class="menu-item" id="longitud" style="top:0; left:65px;" onclick="setCategoria('longitud')">
+            <img src="https://cdn-icons-png.flaticon.com/512/216/216268.png">
+            <span>Longitud</span>
+        </div>
+
+        <div class="menu-item" id="peso" style="top:65px; left:0;" onclick="setCategoria('peso')">
+            <img src="https://cdn-icons-png.flaticon.com/512/1041/1041102.png">
+            <span>Peso</span>
+        </div>
+
+        <div class="menu-item" id="temp" style="top:65px; right:0;" onclick="setCategoria('temp')">
+            <img src="https://cdn-icons-png.flaticon.com/512/1684/1684375.png">
+            <span>Temperatura</span>
+        </div>
+
+        <div class="menu-item" id="tiempo" style="bottom:0; left:65px;" onclick="setCategoria('tiempo')">
+            <img src="https://cdn-icons-png.flaticon.com/512/1827/1827504.png">
+            <span>Tiempo</span>
+        </div>
+    </div>
+
+    <h2 id="titulo">Conversor Estudiantil</h2>
+
+    <input type="number" id="valor" placeholder="Ingresa el valor">
+
+    <select id="tipo"></select>
+
+    <button onclick="convertir()">Convertir</button>
+
+    <div id="resultado"></div>
 </div>
-
-<!-- PANEL QUE MUESTRA EL CONVERSOR -->
-<div id="panel">
-    <h2 id="titulo-panel"></h2>
-
-    <input type="number" id="valor" placeholder="Ingresa un valor" oninput="convertir()">
-
-    <select id="unidad"></select>
-
-    <h3>Resultado:</h3>
-    <p id="resultado" style="font-size:22px; font-weight:bold;"></p>
-</div>
-
-<!-- SONIDO -->
-<audio id="clickSound">
-    <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_7ba9f1cd65.mp3?filename=click-21156.mp3">
-</audio>
 
 <script>
-const sound = document.getElementById("clickSound");
-let abierto = false;
+function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
 
-document.getElementById("menu-btn").onclick = () => {
-    const circle = document.getElementById("menu-circle");
     const items = document.querySelectorAll(".menu-item");
+    items.forEach(i => i.classList.toggle("mostrar"));
+}
 
-    sound.play();
+function setCategoria(cat) {
+    const tipo = document.getElementById("tipo");
+    tipo.innerHTML = ""; 
 
-    if (!abierto) {
-        circle.style.transform = "rotate(360deg)";
-        items.forEach((item, i) => {
-            let ang = (i * 60) * Math.PI / 180;
-            let x = 110 * Math.cos(ang);
-            let y = 110 * Math.sin(ang);
-            item.style.transform = `translate(${x}px, ${y}px)`;
-            item.classList.add("active");
-        });
-    } else {
-        circle.style.transform = "rotate(0deg)";
-        items.forEach(item => {
-            item.style.transform = "translate(-50%, -50%)";
-            item.classList.remove("active");
-        });
-    }
-
-    abierto = !abierto;
-};
-
-document.querySelectorAll(".menu-item").forEach(btn => {
-    btn.onclick = () => {
-        sound.play();
-        let cat = btn.getAttribute("data-cat");
-        abrirPanel(cat);
-    };
-});
-
-function abrirPanel(cat) {
-    const panel = document.getElementById("panel");
-    panel.style.display = "block";
-
-    const titulo = document.getElementById("titulo-panel");
-    const unidad = document.getElementById("unidad");
-
-    unidad.innerHTML = "";
+    document.getElementById("titulo").innerText =
+        "Conversión de " + cat.charAt(0).toUpperCase() + cat.slice(1);
 
     if (cat === "longitud") {
-        titulo.innerText = "📏 Longitud";
-        ["m","cm","mm","km"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+        tipo.innerHTML += `<option value="m_cm">Metros → Centímetros</option>`;
+        tipo.innerHTML += `<option value="cm_m">Centímetros → Metros</option>`;
+        tipo.innerHTML += `<option value="km_m">Kilómetros → Metros</option>`;
+        tipo.innerHTML += `<option value="m_km">Metros → Kilómetros</option>`;
     }
-    if (cat === "masa") {
-        titulo.innerText = "⚖️ Masa";
-        ["kg","g","mg"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+
+    if (cat === "peso") {
+        tipo.innerHTML += `<option value="kg_g">Kilogramos → Gramos</option>`;
+        tipo.innerHTML += `<option value="g_kg">Gramos → Kilogramos</option>`;
     }
+
     if (cat === "temp") {
-        titulo.innerText = "🌡️ Temperatura";
-        ["°C","°F","K"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+        tipo.innerHTML += `<option value="c_f">Celsius → Fahrenheit</option>`;
+        tipo.innerHTML += `<option value="f_c">Fahrenheit → Celsius</option>`;
     }
+
     if (cat === "tiempo") {
-        titulo.innerText = "⏱️ Tiempo";
-        ["s","min","h"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+        tipo.innerHTML += `<option value="h_min">Horas → Minutos</option>`;
+        tipo.innerHTML += `<option value="min_h">Minutos → Horas</option>`;
+        tipo.innerHTML += `<option value="seg_min">Segundos → Minutos</option>`;
+        tipo.innerHTML += `<option value="min_seg">Minutos → Segundos</option>`;
     }
-    if (cat === "volumen") {
-        titulo.innerText = "📦 Volumen";
-        ["L","mL","m³","cm³"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
-    }
-    if (cat === "datos") {
-        titulo.innerText = "💾 Datos Digitales";
-        ["bit","Byte","KB","MB","GB"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
-    }
+
+    toggleMenu();
 }
 
 function convertir() {
-    const v = parseFloat(document.getElementById("valor").value);
-    if (!v) return;
+    let v = parseFloat(document.getElementById("valor").value);
+    let tipo = document.getElementById("tipo").value;
+    let r = 0;
 
-    const u = document.getElementById("unidad").value;
-    const out = document.getElementById("resultado");
+    switch(tipo) {
+        case "m_cm": r = v * 100; break;
+        case "cm_m": r = v / 100; break;
+        case "km_m": r = v * 1000; break;
+        case "m_km": r = v / 1000; break;
 
-    out.innerText = v + " " + u;
+        case "kg_g": r = v * 1000; break;
+        case "g_kg": r = v / 1000; break;
+
+        case "c_f": r = (v * 9/5) + 32; break;
+        case "f_c": r = (v - 32) * 5/9; break;
+
+        case "h_min": r = v * 60; break;
+        case "min_h": r = v / 60; break;
+        case "seg_min": r = v / 60; break;
+        case "min_seg": r = v * 60; break;
+    }
+
+    document.getElementById("resultado").innerHTML = "Resultado: " + r;
 }
 </script>
 
