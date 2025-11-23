@@ -1,207 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversor para Estudiantes</title>
+<meta charset="UTF-8">
+<title>Conversor Estudiantil</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #dbeafe, #e2e8f0);
-            overflow-x: hidden;
-        }
+<style>
+    body {
+        font-family: Arial;
+        background: #f2f2f2;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        /* Animaciones laterales */
-        @keyframes float {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0); }
-        }
+    .container {
+        width: 360px;
+        background: white;
+        padding: 22px;
+        border-radius: 18px;
+        box-shadow: 0 0 18px rgba(0,0,0,0.25);
+        position: relative;
+        animation: aparecer 0.7s ease;
+    }
 
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 20px;
-        }
+    @keyframes aparecer {
+        from { opacity: 0; transform: scale(0.8);}
+        to   { opacity: 1; transform: scale(1);}
+    }
 
-        .side-image {
-            width: 140px;
-            height: 100%;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            animation: float 3s ease-in-out infinite;
-        }
+    /* Reglas animadas */
+    @keyframes flotar {
+        0%   { transform: translateY(0px) rotate(-15deg); }
+        50%  { transform: translateY(-10px) rotate(-12deg); }
+        100% { transform: translateY(0px) rotate(-15deg); }
+    }
 
-        .left {
-            background-image: url('https://i.imgur.com/3nu2XdC.png');
-        }
-
-        .right {
-            background-image: url('https://i.imgur.com/NaYF8hS.png');
-            animation-delay: 1.5s;
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            width: 380px;
-            border-radius: 14px;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.25);
-            text-align: center;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        h1 {
-            color: #1e293b;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        select, input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #475569;
-        }
-
-        button {
-            width: 90%;
-            padding: 12px;
-            font-size: 16px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        button:hover {
-            background: #1d4ed8;
-            transform: scale(1.05);
-        }
-
-        #resultado {
-            margin-top: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #0f172a;
-        }
-
-        @media (max-width: 700px) {
-            .left, .right {
-                display: none;
-            }
-            .card {
-                width: 95%;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <div class="side-image left"></div>
-
-        <div class="card">
-            <h1>📏 Conversor de Unidades</h1>
-
-            <input type="number" id="valor" placeholder="Ingresa un valor">
-
-            <select id="tipo">
-                <option value="longitud">Longitud (m - km - cm - mm)</option>
-                <option value="masa">Masa (kg - g - mg - lb)</option>
-                <option value="tiempo">Tiempo (s - min - hr - día)</option>
-                <option value="temperatura">Temperatura (°C - °F - K)</option>
-                <option value="velocidad">Velocidad (m/s - km/h)</option>
-            </select>
-
-            <select id="desde"></select>
-            <select id="hasta"></select>
-
-            <button onclick="convertir()">Convertir</button>
-
-            <p id="resultado"></p>
-        </div>
-
-        <div class="side-image right"></div>
-    </div>
-
-    <script>
-        const opciones = {
-            longitud: ["m", "km", "cm", "mm"],
-            masa: ["kg", "g", "mg", "lb"],
-            tiempo: ["s", "min", "hr", "día"],
-            temperatura: ["C", "F", "K"],
-            velocidad: ["m/s", "km/h"]
-        };
-
-        const factores = {
-            m: 1, km: 1000, cm: 0.01, mm: 0.001,
-            kg: 1, g: 0.001, mg: 0.000001, lb: 0.453592,
-            s: 1, min: 60, hr: 3600, día: 86400,
-            "m/s": 1, "km/h": 0.277778
-        };
-
-        function cargarOpciones() {
-            const tipo = document.getElementById("tipo").value;
-            const desde = document.getElementById("desde");
-            const hasta = document.getElementById("hasta");
-
-            desde.innerHTML = "";
-            hasta.innerHTML = "";
-
-            opciones[tipo].forEach(u => {
-                desde.innerHTML += `<option value="${u}">${u}</option>`;
-                hasta.innerHTML += `<option value="${u}">${u}</option>`;
-            });
-        }
-
-        function convertir() {
-            const valor = parseFloat(document.getElementById("valor").value);
-            const u1 = document.getElementById("desde").value;
-            const u2 = document.getElementById("hasta").value;
-            const tipo = document.getElementById("tipo").value;
-
-            if (isNaN(valor)) {
-                document.getElementById("resultado").innerText = "Ingresa un valor válido";
-                return;
-            }
-
-            let resultado;
-
-            if (tipo === "temperatura") {
-                resultado = convertirTemperatura(valor, u1, u2);
-            } else {
-                resultado = (valor * factores[u1]) / factores[u2];
-            }
-
-            document.getElementById("resultado").innerText = `${valor} ${u1} = ${resultado} ${u2}`;
-        }
-
-        function convertirTemperatura(v, u1, u2) {
-            if (u1 === u2) return v;
-
-            let kelvin;
-            if (u1 === "C") kelvin = v + 273.15;
-            if (u1 === "F") kelvin = (v + 459.67) * 5/9;
-            if (u1 === "K") kelvin = v;
-
-            if (u2 === "C") return kelvin - 273.15;
-            if (u2 === "F") return kelvin * 9/5 - 459.67;
-            if (u2 === "K") return kelvin;
-        }
-
-        cargarOpciones();
-        document.getElementById("tipo").addEventListener("change", cargarOpciones);
-    </script>
-
-</body>
-</html>
-
+    @keyfr
