@@ -1,183 +1,221 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora de Conversiones</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(#f7f7f7, #e2f3ff);
-            text-align: center;
-        }
+<meta charset="UTF-8">
+<title>Conversor Circular Santiago</title>
 
-        header {
-            background: linear-gradient(90deg, #4a00e0, #8e2de2, #00c6ff);
-            padding: 20px;
-            color: white;
-            font-size: 30px;
-            font-weight: bold;
-            text-shadow: 2px 2px 6px black;
-            animation: glow 2s infinite alternate;
-        }
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1b1b1b, #333);
+        text-align: center;
+        color: white;
+        padding-top: 40px;
+    }
 
-        @keyframes glow {
-            from { text-shadow: 0 0 10px white; }
-            to { text-shadow: 0 0 20px #00eaff; }
-        }
+    h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px #00eaff;
+    }
 
-        .container {
-            margin: 40px auto;
-            background: white;
-            padding: 25px;
-            width: 90%;
-            max-width: 700px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            animation: fadeIn 1.2s ease;
-        }
+    /* BOTÓN CENTRAL */
+    #menu-btn {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #00eaff, #007bff);
+        border: 3px solid white;
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 17px;
+        transition: 0.3s;
+        box-shadow: 0 0 20px #00eaff;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    #menu-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 25px #00ffff;
+    }
 
-        label, select, input {
-            display: block;
-            margin: 15px auto;
-            font-size: 18px;
-        }
+    /* CONTENEDOR DEL CÍRCULO */
+    #menu-circle {
+        position: relative;
+        width: 260px;
+        height: 260px;
+        margin: 20px auto;
+        transform: rotate(0deg);
+        transition: 1.2s ease;
+    }
 
-        input, select {
-            padding: 10px;
-            width: 80%;
-            border: 2px solid #8e2de2;
-            border-radius: 10px;
-            outline: none;
-        }
+    /* ICONOS DEL MENÚ */
+    .menu-item {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background: #ffce00;
+        border: 3px solid #333;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        cursor: pointer;
+        opacity: 0;
+        transition: 0.6s;
+        box-shadow: 0 0 10px black;
+    }
 
-        button {
-            padding: 12px 20px;
-            background: #8e2de2;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: 0.3s;
-        }
+    .menu-item.active {
+        opacity: 1;
+    }
 
-        button:hover {
-            background: #5a189a;
-            transform: scale(1.05);
-        }
+    /* PANEL DE CONVERSIÓN */
+    #panel {
+        background: white;
+        width: 90%;
+        max-width: 450px;
+        margin: 20px auto;
+        padding: 20px;
+        color: black;
+        border-radius: 20px;
+        box-shadow: 0 0 20px black;
+        display: none;
+        animation: aparecer 0.7s ease;
+    }
 
-        .regla {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 70px;
-            height: 100vh;
-            background: repeating-linear-gradient(
-                to bottom,
-                #ffaa5a,
-                #ffaa5a 10px,
-                #d17f36 10px,
-                #d17f36 20px
-            );
-            border-right: 4px solid #8b5e2b;
-        }
+    @keyframes aparecer {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 
-        audio { display: none; }
-    </style>
+    select, input {
+        width: 80%;
+        padding: 10px;
+        margin-top: 13px;
+        border-radius: 10px;
+        border: 2px solid #007bff;
+    }
+</style>
+
 </head>
 <body>
 
-<header>✨ Súper Convertidor de Unidades</header>
-<div class="regla"></div>
+<h1>✨ Conversor con Menú Circular </h1>
 
-<div class="container">
-    <h2>Selecciona el tipo de conversión 📘</h2>
+<button id="menu-btn">Menú</button>
 
-    <button onclick="toggleMenu()">📌 Abrir menú</button>
-
-    <select id="tipo" style="display:none" onchange="updateUnits(); playSound()">
-        <option value="longitud">Longitud</option>
-        <option value="masa">Masa</option>
-        <option value="tiempo">Tiempo</option>
-        <option value="temperatura">Temperatura</option>
-        <option value="volumen">Volumen</option>
-        <option value="datos">Datos digitales</option>
-    </select>
-
-    <label>Ingresa el valor:</label>
-    <input type="number" id="valor" placeholder="Ej: 10" oninput="convertir(); playSound()" />
-
-    <label>Convertir a:</label>
-    <select id="unidad" onchange="convertir()"></select>
-
-    <h3>Resultado:</h3>
-    <p id="resultado" style="font-size: 24px; font-weight: bold; color:#8e2de2"></p>
+<div id="menu-circle">
+    <div class="menu-item" id="i1" data-cat="longitud">📏</div>
+    <div class="menu-item" id="i2" data-cat="masa">⚖️</div>
+    <div class="menu-item" id="i3" data-cat="temp">🌡️</div>
+    <div class="menu-item" id="i4" data-cat="tiempo">⏱️</div>
+    <div class="menu-item" id="i5" data-cat="volumen">📦</div>
+    <div class="menu-item" id="i6" data-cat="datos">💾</div>
 </div>
 
-<audio id="beep">
-    <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/ogg">
+<!-- PANEL QUE MUESTRA EL CONVERSOR -->
+<div id="panel">
+    <h2 id="titulo-panel"></h2>
+
+    <input type="number" id="valor" placeholder="Ingresa un valor" oninput="convertir()">
+
+    <select id="unidad"></select>
+
+    <h3>Resultado:</h3>
+    <p id="resultado" style="font-size:22px; font-weight:bold;"></p>
+</div>
+
+<!-- SONIDO -->
+<audio id="clickSound">
+    <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_7ba9f1cd65.mp3?filename=click-21156.mp3">
 </audio>
 
 <script>
-function playSound() {
-    document.getElementById("beep").play();
-}
+const sound = document.getElementById("clickSound");
+let abierto = false;
 
-function toggleMenu() {
-    const tipo = document.getElementById("tipo");
-    tipo.style.display = tipo.style.display === "none" ? "block" : "none";
-}
+document.getElementById("menu-btn").onclick = () => {
+    const circle = document.getElementById("menu-circle");
+    const items = document.querySelectorAll(".menu-item");
 
-const opciones = {
-    longitud: ["m", "cm", "mm", "km"],
-    masa: ["kg", "g", "mg"],
-    tiempo: ["s", "min", "h"],
-    temperatura: ["°C", "°F", "K"],
-    volumen: ["L", "mL", "m³", "cm³"],
-    datos: ["bit", "Byte", "KB", "MB", "GB"]
+    sound.play();
+
+    if (!abierto) {
+        circle.style.transform = "rotate(360deg)";
+        items.forEach((item, i) => {
+            let ang = (i * 60) * Math.PI / 180;
+            let x = 110 * Math.cos(ang);
+            let y = 110 * Math.sin(ang);
+            item.style.transform = `translate(${x}px, ${y}px)`;
+            item.classList.add("active");
+        });
+    } else {
+        circle.style.transform = "rotate(0deg)";
+        items.forEach(item => {
+            item.style.transform = "translate(-50%, -50%)";
+            item.classList.remove("active");
+        });
+    }
+
+    abierto = !abierto;
 };
 
-const factor = {
-    m: 1, cm: 0.01, mm: 0.001, km: 1000,
-    kg: 1, g: 0.001, mg: 0.000001,
-    s: 1, min: 60, h: 3600,
-    L: 1, mL: 0.001, "m³": 1000, "cm³": 0.001,
-    bit: 1, Byte: 8, KB: 8000, MB: 8e6, GB: 8e9
-};
+document.querySelectorAll(".menu-item").forEach(btn => {
+    btn.onclick = () => {
+        sound.play();
+        let cat = btn.getAttribute("data-cat");
+        abrirPanel(cat);
+    };
+});
 
-function updateUnits() {
-    const tipo = document.getElementById("tipo").value;
+function abrirPanel(cat) {
+    const panel = document.getElementById("panel");
+    panel.style.display = "block";
+
+    const titulo = document.getElementById("titulo-panel");
     const unidad = document.getElementById("unidad");
+
     unidad.innerHTML = "";
-    opciones[tipo].forEach(u => unidad.innerHTML += `<option value="${u}">${u}</option>`);
+
+    if (cat === "longitud") {
+        titulo.innerText = "📏 Longitud";
+        ["m","cm","mm","km"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+    }
+    if (cat === "masa") {
+        titulo.innerText = "⚖️ Masa";
+        ["kg","g","mg"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+    }
+    if (cat === "temp") {
+        titulo.innerText = "🌡️ Temperatura";
+        ["°C","°F","K"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+    }
+    if (cat === "tiempo") {
+        titulo.innerText = "⏱️ Tiempo";
+        ["s","min","h"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+    }
+    if (cat === "volumen") {
+        titulo.innerText = "📦 Volumen";
+        ["L","mL","m³","cm³"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+    }
+    if (cat === "datos") {
+        titulo.innerText = "💾 Datos Digitales";
+        ["bit","Byte","KB","MB","GB"].forEach(u=>unidad.innerHTML+=`<option>${u}</option>`);
+    }
 }
 
 function convertir() {
-    const tipo = document.getElementById("tipo").value;
-    const valor = parseFloat(document.getElementById("valor").value);
-    const unidad = document.getElementById("unidad").value;
+    const v = parseFloat(document.getElementById("valor").value);
+    if (!v) return;
 
-    if (!tipo || isNaN(valor)) return;
+    const u = document.getElementById("unidad").value;
+    const out = document.getElementById("resultado");
 
-    if (tipo === "temperatura") {
-        let res;
-        if (unidad === "°C") res = valor;
-        if (unidad === "°F") res = valor * 1.8 + 32;
-        if (unidad === "K") res = valor + 273.15;
-        document.getElementById("resultado").innerText = res + " " + unidad;
-        return;
-    }
-
-    let enBase = valor * factor[unidad];
-    document.getElementById("resultado").innerText = enBase + " " + unidad;
+    out.innerText = v + " " + u;
 }
 </script>
 
