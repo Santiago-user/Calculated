@@ -3,27 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversor de Unidades para Estudiantes</title>
+    <title>Conversor para Estudiantes</title>
 
     <style>
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            background: #f1f5f9;
-            padding: 20px;
-            text-align: center;
+            background: linear-gradient(135deg, #dbeafe, #e2e8f0);
+            overflow-x: hidden;
         }
 
-        h1 {
-            color: #1e293b;
+        /* Animaciones laterales */
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0); }
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .side-image {
+            width: 140px;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .left {
+            background-image: url('https://i.imgur.com/3nu2XdC.png');
+        }
+
+        .right {
+            background-image: url('https://i.imgur.com/NaYF8hS.png');
+            animation-delay: 1.5s;
         }
 
         .card {
             background: white;
-            padding: 20px;
-            width: 350px;
-            margin: auto;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            width: 380px;
+            border-radius: 14px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.25);
+            text-align: center;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        h1 {
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: bold;
         }
 
         select, input {
@@ -31,7 +67,7 @@
             padding: 10px;
             margin: 10px 0;
             border-radius: 8px;
-            border: 1px solid #64748b;
+            border: 1px solid #475569;
         }
 
         button {
@@ -43,52 +79,74 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            transition: transform 0.2s;
         }
 
         button:hover {
             background: #1d4ed8;
+            transform: scale(1.05);
         }
 
         #resultado {
             margin-top: 15px;
             font-size: 18px;
-            color: #0f172a;
             font-weight: bold;
+            color: #0f172a;
+        }
+
+        @media (max-width: 700px) {
+            .left, .right {
+                display: none;
+            }
+            .card {
+                width: 95%;
+            }
         }
     </style>
 </head>
 <body>
 
-    <h1>🔢 Conversor para Estudiantes</h1>
+    <div class="container">
+        <div class="side-image left"></div>
 
-    <div class="card">
-        <input type="number" id="valor" placeholder="Ingresa un valor">
+        <div class="card">
+            <h1>📏 Conversor de Unidades</h1>
 
-        <select id="tipo">
-            <option value="longitud">Longitud (m - km - cm)</option>
-            <option value="masa">Masa (kg - g - mg)</option>
-            <option value="tiempo">Tiempo (s - min - hr)</option>
-        </select>
+            <input type="number" id="valor" placeholder="Ingresa un valor">
 
-        <select id="desde"></select>
-        <select id="hasta"></select>
+            <select id="tipo">
+                <option value="longitud">Longitud (m - km - cm - mm)</option>
+                <option value="masa">Masa (kg - g - mg - lb)</option>
+                <option value="tiempo">Tiempo (s - min - hr - día)</option>
+                <option value="temperatura">Temperatura (°C - °F - K)</option>
+                <option value="velocidad">Velocidad (m/s - km/h)</option>
+            </select>
 
-        <button onclick="convertir()">Convertir</button>
+            <select id="desde"></select>
+            <select id="hasta"></select>
 
-        <p id="resultado"></p>
+            <button onclick="convertir()">Convertir</button>
+
+            <p id="resultado"></p>
+        </div>
+
+        <div class="side-image right"></div>
     </div>
 
     <script>
         const opciones = {
-            longitud: ["m", "km", "cm"],
-            masa: ["kg", "g", "mg"],
-            tiempo: ["s", "min", "hr"]
+            longitud: ["m", "km", "cm", "mm"],
+            masa: ["kg", "g", "mg", "lb"],
+            tiempo: ["s", "min", "hr", "día"],
+            temperatura: ["C", "F", "K"],
+            velocidad: ["m/s", "km/h"]
         };
 
         const factores = {
-            m: 1, km: 1000, cm: 0.01,
-            kg: 1, g: 0.001, mg: 0.000001,
-            s: 1, min: 60, hr: 3600
+            m: 1, km: 1000, cm: 0.01, mm: 0.001,
+            kg: 1, g: 0.001, mg: 0.000001, lb: 0.453592,
+            s: 1, min: 60, hr: 3600, día: 86400,
+            "m/s": 1, "km/h": 0.277778
         };
 
         function cargarOpciones() {
@@ -109,16 +167,35 @@
             const valor = parseFloat(document.getElementById("valor").value);
             const u1 = document.getElementById("desde").value;
             const u2 = document.getElementById("hasta").value;
+            const tipo = document.getElementById("tipo").value;
 
             if (isNaN(valor)) {
                 document.getElementById("resultado").innerText = "Ingresa un valor válido";
                 return;
             }
 
-            const resultado = (valor * factores[u1]) / factores[u2];
+            let resultado;
 
-            document.getElementById("resultado").innerText =
-                `${valor} ${u1} = ${resultado} ${u2}`;
+            if (tipo === "temperatura") {
+                resultado = convertirTemperatura(valor, u1, u2);
+            } else {
+                resultado = (valor * factores[u1]) / factores[u2];
+            }
+
+            document.getElementById("resultado").innerText = `${valor} ${u1} = ${resultado} ${u2}`;
+        }
+
+        function convertirTemperatura(v, u1, u2) {
+            if (u1 === u2) return v;
+
+            let kelvin;
+            if (u1 === "C") kelvin = v + 273.15;
+            if (u1 === "F") kelvin = (v + 459.67) * 5/9;
+            if (u1 === "K") kelvin = v;
+
+            if (u2 === "C") return kelvin - 273.15;
+            if (u2 === "F") return kelvin * 9/5 - 459.67;
+            if (u2 === "K") return kelvin;
         }
 
         cargarOpciones();
@@ -127,3 +204,4 @@
 
 </body>
 </html>
+
